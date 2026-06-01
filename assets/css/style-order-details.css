@@ -1,0 +1,60 @@
+body {
+  font-family: "Vazir", sans-serif;
+  background-color: #f8f9fa;
+  font-size: 14px;
+}
+.order-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.product-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.status-badge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.badge-pending {
+  background: #f6c23e;
+}
+.badge-processing {
+  background: #36b9cc;
+}
+.badge-shipped {
+  background: #4e73df;
+}
+.badge-completed {
+  background: #1cc88a;
+}
+.badge-cancelled {
+  background: #e74a3b;
+}
+.discount-badge {
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.summary-item {
+  border-right: 3px solid #4e73df;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #f8f9fc;
+}
+@media (max-width: 768px) {
+  .product-img {
+    width: 50px;
+    height: 50px;
+  }
+  body {
+    font-size: 13px;
+  }
+}

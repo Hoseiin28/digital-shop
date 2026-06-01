@@ -1,0 +1,253 @@
+.faq-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  color: var(--dark-color);
+  font-size: 1.1rem;
+  opacity: 0.8;
+}
+
+.faq-searchh-box {
+  margin-bottom: 2rem;
+}
+
+.searchh-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.searchh-form {
+  display: flex;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.searchh-form input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  font-family: inherit;
+}
+
+.searchh-form input:focus {
+  outline: none;
+}
+
+.searchh-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.faq-content {
+  display: flex;
+  gap: 2rem;
+}
+
+.faq-sidebar {
+  flex: 0 0 250px;
+}
+
+.faq-main {
+  flex: 1;
+}
+
+.sidebar-section {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+}
+
+.sidebar-title {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-list li {
+  margin-bottom: 0.5rem;
+}
+
+.category-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  color: var(--dark-color);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.category-list a:hover,
+.category-list a.active {
+  background-color: rgba(78, 115, 223, 0.1);
+  color: var(--primary-color);
+}
+
+.category-list .count {
+  background-color: rgba(78, 115, 223, 0.1);
+  color: var(--primary-color);
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+}
+
+.faq-accordion {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+  overflow: hidden;
+}
+
+.faq-item {
+  border-bottom: 1px solid #e3e6f0;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-question {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faq-question h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--dark-color);
+}
+
+.faq-toggle {
+  color: var(--primary-color);
+  transition: transform 0.3s;
+}
+
+.faq-answer {
+  padding: 0 1.5rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s, padding 0.3s;
+}
+
+.faq-item.active .faq-answer {
+  padding: 0 1.5rem 1.5rem;
+  max-height: 1000px;
+}
+
+.faq-item.active .faq-toggle {
+  transform: rotate(180deg);
+}
+
+.answer-content {
+  line-height: 1.6;
+}
+
+.faq-tags {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.faq-tags span {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.faq-tags a {
+  background-color: rgba(78, 115, 223, 0.1);
+  color: var(--primary-color);
+  padding: 0.2rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.faq-tags a:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+}
+
+.no-results-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.no-results h3 {
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+}
+
+.no-results p {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.reset-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .faq-content {
+    flex-direction: column;
+  }
+
+  .faq-sidebar {
+    flex: 0 0 auto;
+  }
+
+  .searchh-form {
+    flex-direction: column;
+  }
+
+  .searchh-form input {
+    width: 100%;
+  }
+
+  .searchh-button {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+}

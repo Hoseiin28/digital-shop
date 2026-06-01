@@ -1,0 +1,251 @@
+DELIMITER //
+CREATE TRIGGER after_user_insert
+AFTER INSERT ON Users
+FOR EACH ROW
+BEGIN
+    IF NEW.role = 'user' THEN
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('new_user', 'کاربر جدید', CONCAT('کاربر جدید با نام ', NEW.name, ' ثبت نام کرد'), NEW.id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_user_update
+AFTER UPDATE ON Users
+FOR EACH ROW
+BEGIN
+    IF OLD.avatar <> NEW.avatar THEN
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('other', 'تغییر تصویر پروفایل', CONCAT('کاربر ', NEW.name, ' تصویر پروفایل خود را تغییر داد'), NEW.id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_product_insert
+AFTER INSERT ON Products
+FOR EACH ROW
+BEGIN
+    DECLARE category_name VARCHAR(255);
+    
+    SELECT name INTO category_name FROM Categories WHERE id = NEW.category_id;
+    
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('other', 'محصول جدید', CONCAT('محصول جدید با نام ', NEW.name, ' در دسته‌بندی ', category_name, ' اضافه شد'), NEW.id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER before_product_stock_update
+BEFORE UPDATE ON Products
+FOR EACH ROW
+BEGIN
+    IF NEW.stock < 5 AND NEW.stock > 0 AND OLD.stock >= 5 THEN
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('other', 'موجودی کم محصول', CONCAT('موجودی محصول ', NEW.name, ' در حال اتمام است. موجودی فعلی: ', NEW.stock), NEW.id, FALSE, FALSE);
+    ELSEIF NEW.stock = 0 AND OLD.stock > 0 THEN
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('other', 'اتمام موجودی محصول', CONCAT('موجودی محصول ', NEW.name, ' به پایان رسید'), NEW.id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_order_insert
+AFTER INSERT ON Orders
+FOR EACH ROW
+BEGIN
+    DECLARE user_name VARCHAR(255);
+    
+    SELECT name INTO user_name FROM Users WHERE id = NEW.user_id;
+    
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('new_order', 'سفارش جدید', CONCAT('سفارش جدید از کاربر ', user_name, 'در سبد خرید', ' ثبت شد'), NEW.id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_order_status_update
+AFTER UPDATE ON Orders
+FOR EACH ROW
+BEGIN
+    DECLARE user_name VARCHAR(255);
+    
+    IF OLD.status <> NEW.status THEN
+        SELECT name INTO user_name FROM Users WHERE id = NEW.user_id;
+
+        -- نوتیفیکیشن برای ادمین
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('order_status_change', 'تغییر وضعیت سفارش', 
+                CONCAT('وضعیت سفارش شماره ', NEW.id, ' از ', OLD.status, ' به ', NEW.status, ' تغییر کرد'), 
+                NEW.id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_payment_success
+AFTER INSERT ON Payments
+FOR EACH ROW
+BEGIN
+    DECLARE user_name VARCHAR(255);
+    DECLARE order_total DECIMAL(12, 0);
+
+    IF NEW.status = 'successful' THEN
+        SELECT name INTO user_name FROM Users WHERE id = NEW.user_id;
+        SELECT total_price INTO order_total FROM Orders WHERE id = NEW.order_id;
+
+        -- نوتیفیکیشن برای ادمین
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('new_order', 'پرداخت موفق', CONCAT('پرداخت سفارش شماره ', NEW.order_id, ' توسط کاربر ', user_name, ' با مبلغ ', NEW.amount, ' انجام شد'), NEW.order_id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_review_insert
+AFTER INSERT ON Reviews
+FOR EACH ROW
+BEGIN
+    DECLARE product_name VARCHAR(255);
+    DECLARE user_name VARCHAR(255);
+    
+    SELECT name INTO product_name FROM Products WHERE id = NEW.product_id;
+    SELECT name INTO user_name FROM Users WHERE id = NEW.user_id;
+    
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('new_review', 'نظر جدید', CONCAT('کاربر ', user_name, ' به محصول ', product_name, ' امتیاز ', NEW.rating, ' داد'), NEW.product_id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_consultation_insert
+AFTER INSERT ON Consultations
+FOR EACH ROW
+BEGIN
+    DECLARE user_name VARCHAR(255);
+    DECLARE advisor_name VARCHAR(255);
+    
+    SELECT name INTO user_name FROM Users WHERE id = NEW.user_id;
+    SELECT name INTO advisor_name FROM Users WHERE id = NEW.advisor_id;
+    
+    -- نوتیفیکیشن برای ادمین
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('new_consultation', 'درخواست مشاوره جدید', 
+            CONCAT('درخواست مشاوره جدید از کاربر ', user_name, ' با موضوع ', NEW.topic), 
+            NEW.id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_consultation_message_insert
+AFTER INSERT ON ConsultationMessages
+FOR EACH ROW
+BEGIN
+    DECLARE consultation_topic VARCHAR(255);
+    DECLARE receiver_id INT;
+    
+    SELECT topic INTO consultation_topic FROM Consultations WHERE id = NEW.consultation_id;
+    
+    -- تعیین دریافت کننده پیام
+    IF NEW.sender_id = (SELECT user_id FROM Consultations WHERE id = NEW.consultation_id) THEN
+        SET receiver_id = (SELECT advisor_id FROM Consultations WHERE id = NEW.consultation_id);
+    ELSE
+        SET receiver_id = (SELECT user_id FROM Consultations WHERE id = NEW.consultation_id);
+    END IF;
+    
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('new_message', 'پیام جدید در مشاوره', CONCAT('پیام جدید در مشاوره با موضوع ', consultation_topic), NEW.consultation_id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_discount_insert
+AFTER INSERT ON Discounts
+FOR EACH ROW
+BEGIN
+    DECLARE product_name VARCHAR(255);
+    
+    SELECT name INTO product_name FROM Products WHERE id = NEW.product_id;
+    
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('other', 'تخفیف جدید', CONCAT('تخفیف جدید برای محصول ', product_name, ' ثبت شد'), NEW.product_id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER before_discount_end_date_update
+BEFORE UPDATE ON Discounts
+FOR EACH ROW
+BEGIN
+    DECLARE product_name VARCHAR(255);
+    
+    IF NEW.end_date < DATE_ADD(NOW(), INTERVAL 3 DAY) AND OLD.end_date >= DATE_ADD(NOW(), INTERVAL 3 DAY) THEN
+        SELECT name INTO product_name FROM Products WHERE id = NEW.product_id;
+        
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('other', 'تخفیف در حال اتمام', 
+                CONCAT('تخفیف محصول ', product_name, ' تا ', NEW.end_date, ' اعتبار دارد'), 
+                NEW.product_id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_contact_message_insert
+AFTER INSERT ON ContactMessages
+FOR EACH ROW
+BEGIN
+    INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+    VALUES ('other', 'پیام جدید از تماس با ما', CONCAT('پیام جدید از ', NEW.name, ' با موضوع ', NEW.message), NEW.id, FALSE, FALSE);
+END//
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER after_product_view_insert
+AFTER INSERT ON ProductViews
+FOR EACH ROW
+BEGIN
+    DECLARE total_views INT;
+    DECLARE product_name VARCHAR(255);
+    
+    SELECT SUM(view_count) INTO total_views FROM ProductViews WHERE product_id = NEW.product_id;
+    
+    -- اگر بازدیدها از 1000 گذشت
+    IF total_views % 1000 = 0 AND total_views > 0 THEN        
+        SELECT name INTO product_name FROM Products WHERE id = NEW.product_id;
+        
+        INSERT INTO Notifications (type, title, message, related_id, is_read, is_dismissed)
+        VALUES ('other', 'رکورد بازدید محصول', 
+                CONCAT('محصول ', product_name, ' به ', total_views, ' بازدید رسید'), 
+                NEW.product_id, FALSE, FALSE);
+    END IF;
+END//
+DELIMITER ;

@@ -1,0 +1,351 @@
+/* General Styles */
+body {
+  font-family: "Vazir", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fc;
+  color: #333;
+}
+
+/* Consultation Container */
+.consultation-container {
+  display: flex;
+  height: calc(100vh - 200px);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 320px;
+  border-left: 1px solid #eee;
+  background-color: white;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.consultation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.consultation-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.consultation-item:hover {
+  background-color: #f8f9fa;
+}
+
+.consultation-item.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.consultation-item.active .consultation-status {
+  color: white;
+}
+
+.consultation-status {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.status-pending {
+  color: var(--warning-color);
+  background-color: rgba(246, 194, 62, 0.1);
+}
+
+.status-confirmed {
+  color: var(--success-color);
+  background-color: rgba(28, 200, 138, 0.1);
+}
+
+.status-completed {
+  color: var(--info-color);
+  background-color: rgba(54, 185, 204, 0.1);
+}
+
+.status-cancelled {
+  color: var(--danger-color);
+  background-color: rgba(231, 74, 59, 0.1);
+}
+
+.no-consultation {
+  text-align: center;
+  color: #6c757d;
+  padding: 20px;
+}
+
+.no-consultation i {
+  font-size: 2rem;
+  color: #dee2e6;
+}
+
+/* Main Content Styles */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--chat-bg);
+}
+
+.chat-header {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+
+.advisor-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-left: 15px;
+  border: 2px solid var(--primary-color);
+}
+
+.chat-status {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.online {
+  color: var(--success-color);
+}
+
+.offline {
+  color: var(--danger-color);
+}
+
+/* Chat Messages Styles */
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--chat-bg);
+}
+
+.message {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.message-content {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.message-text {
+  line-height: 1.6;
+}
+
+.message-user {
+  justify-content: flex-end;
+}
+
+.message-user .message-content {
+  background-color: var(--user-message-bg);
+  border-top-right-radius: 0;
+  margin-left: auto;
+}
+
+.message-advisor {
+  justify-content: flex-start;
+}
+
+.message-advisor .message-content {
+  background-color: var(--advisor-message-bg);
+  border-top-left-radius: 0;
+  margin-right: auto;
+}
+
+/* Chat Input Styles */
+.chat-input {
+  padding: 15px;
+  background-color: white;
+  border-top: 1px solid #eee;
+}
+
+.chat-input textarea {
+  resize: none;
+  min-height: 50px;
+  max-height: 150px;
+  border-radius: 25px;
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  transition: all 0.3s;
+}
+
+.chat-input textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+.send-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.consultation-ended {
+  padding: 15px;
+  text-align: center;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-top: 1px solid #eee;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  overflow: hidden;
+  animation: modalFadeIn 0.3s;
+}
+
+.modal-header {
+  padding: 15px;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+}
+
+/* Animations */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .consultation-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 300px;
+    border-left: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .main-content {
+    height: 500px;
+  }
+}
+
+@media (max-width: 576px) {
+  .message-content {
+    max-width: 85%;
+  }
+
+  .chat-header {
+    padding: 10px;
+  }
+
+  .advisor-avatar {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Floating Button */
+.floating-chat-btn {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s;
+}
+
+.floating-chat-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

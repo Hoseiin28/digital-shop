@@ -1,0 +1,337 @@
+اسم دیتابیس: digital_shop
+
+جدول کاربران (Users)
+
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address TEXT,
+    avatar VARCHAR(255),
+    role ENUM('admin', 'user') DEFAULT 'user',
+    last_activity INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+جدول دسته‌بندی‌ها (Categories)
+
+CREATE TABLE Categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    parent_id INT DEFAULT NULL,
+    description TEXT,
+    image_url VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (parent_id) REFERENCES Categories(id) ON DELETE SET NULL
+);
+
+
+جدول محصولات (Products)
+
+CREATE TABLE Products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    category_id INT NOT NULL,
+    price DECIMAL(12, 2) NOT NULL,
+    description TEXT,
+    stock INT DEFAULT 0,
+    image_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES Categories(id) ON DELETE CASCADE
+);
+
+
+جدول ویژگی‌های محصولات (ProductAttributes)
+
+CREATE TABLE ProductAttributes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    attribute_name VARCHAR(255) NOT NULL,
+    attribute_value VARCHAR(255) NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+
+جدول تصاویر محصولات (ProductImages )
+
+CREATE TABLE ProductImages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+
+مقایسه محصولات
+
+CREATE TABLE ProductComparison (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    session_id VARCHAR(255) NULL,
+    product_id INT NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES Products(id),
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    INDEX (user_id),
+    INDEX (session_id)
+);
+
+جدول کدهای تخفیف (Discounts)
+
+CREATE TABLE Discounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    discount_type ENUM('percentage', 'fixed') NOT NULL,
+    discount_value DECIMAL(12, 2) NOT NULL,
+    start_date DATETIME DEFAULT NULL,
+    end_date DATETIME DEFAULT NULL,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+
+جدول سفارش‌ها (Orders)
+
+CREATE TABLE Orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    total_price DECIMAL(12, 0) NOT NULL,
+    status ENUM('pending', 'processing', 'shipped', 'completed', 'cancelled') DEFAULT 'pending',
+    payment_status ENUM('paid', 'unpaid') DEFAULT 'unpaid',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+
+جدول جزئیات سفارش‌ها (OrderDetails)
+
+CREATE TABLE OrderDetails (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    price DECIMAL(12, 0) NOT NULL,
+    subtotal DECIMAL(12, 0) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES Orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE
+);
+
+
+جدول پرداخت‌ها (Payments)
+
+CREATE TABLE Payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    user_id INT NOT NULL,
+    amount DECIMAL(12, 0) NOT NULL,
+    payment_method ENUM('online', 'cash_on_delivery') DEFAULT 'online',
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('successful', 'failed') DEFAULT 'successful',
+    DECIMAL(12, 0) DEFAULT 0,
+    FOREIGN KEY (order_id) REFERENCES Orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+
+جدول نظرات و امتیازها (Reviews)
+
+CREATE TABLE Reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    parent_id INT DEFAULT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES Reviews(id) ON DELETE CASCADE
+);
+
+ جدول بازدید محصولاتProductViews
+
+CREATE TABLE `ProductViews` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `user_agent` text,
+  `view_date` date NOT NULL,
+  `view_count` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_daily_view` (`product_id`,`ip_address`,`view_date`),
+  KEY `product_id` (`product_id`),
+  KEY `ip_address` (`ip_address`),
+  KEY `user_id` (`user_id`)
+);
+
+جدول پیام‌های تماس با ما (ContactMessages)
+
+CREATE TABLE ContactMessages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+جدول مقالات و بلاگ (Articles)
+
+CREATE TABLE Articles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    author_id INT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    status ENUM('active', 'inactive') NOT NULL,
+    category INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES Users(id),
+    FOREIGN KEY (category) REFERENCES Categories(id)
+);
+
+
+جدول جلسات مشاوره (Consultations)
+
+CREATE TABLE Consultations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    advisor_id INT NOT NULL,
+    topic VARCHAR(255),
+    message TEXT,
+    consultation_date DATETIME,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (advisor_id) REFERENCES Users(id) ON DELETE CASCADE 
+);
+
+
+جدول پیام‌های مشاوره‌ای (ConsultationMessages)
+
+CREATE TABLE ConsultationMessages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    consultation_id INT NOT NULL,
+    sender_id INT NOT NULL,
+    message TEXT NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (consultation_id) REFERENCES Consultations(id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+
+جدول مورد علاقه‌ها (Favorites)
+
+CREATE TABLE Favorites (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES Products(id) ON DELETE CASCADE,
+    UNIQUE (user_id, product_id)
+);
+
+
+
+
+CREATE TABLE Notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('new_user', 'new_order', 'new_message', 'new_review', 'new_consultation', 'other') NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    is_dismissed BOOLEAN DEFAULT FALSE,
+    related_id INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE ShopSettings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    shop_name VARCHAR(255) NOT NULL,
+    shop_description TEXT,
+    logo_url VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(20),
+    instagram VARCHAR(100),
+    telegram VARCHAR(100),
+    whatsapp VARCHAR(100),
+    location VARCHAR(255),
+    working_hours VARCHAR(100),
+    youtube VARCHAR(100),
+    address TEXT,
+    button_color VARCHAR(20) DEFAULT '#007bff',
+    font_family VARCHAR(100) DEFAULT 'Arial, sans-serif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- جدول برای اسلایدرها
+CREATE TABLE ShopSliders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    caption TEXT,
+    button_text VARCHAR(50),
+    button_link VARCHAR(255),
+    display_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+جدول سوالات متداول (FAQs)
+
+CREATE TABLE FAQs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    tags VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+جدول “درباره ما” (AboutUs)
+
+CREATE TABLE AboutUs (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ description TEXT NOT NULL,
+ established_date DATE,
+ mission TEXT,
+ vision TEXT,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+جدول “اعضای تیم” (TeamMembers)
+
+CREATE TABLE TeamMembers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    about_us_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    position VARCHAR(255) NOT NULL,
+    bio TEXT,
+    avatar VARCHAR(255),
+    contact_email VARCHAR(255),
+    contact_phone VARCHAR(20),
+    instagram_link VARCHAR(255),
+    telegram_link VARCHAR(255),
+    linkedin_link VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (about_us_id) REFERENCES AboutUs(id) ON DELETE CASCADE
+);

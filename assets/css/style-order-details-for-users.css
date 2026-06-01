@@ -1,0 +1,223 @@
+:root {
+  --primary-color: #4e54c8;
+  --secondary-color: #8f94fb;
+  --accent-color: #ff7e5f;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: "Vazirmatn", sans-serif;
+  background-color: #f5f7fa;
+  color: var(--dark-color);
+}
+
+.order-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.order-header {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.profile-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 25px;
+  border: none;
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-weight: 700;
+  padding: 18px 25px;
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+.card-header i {
+  margin-left: 10px;
+  color: var(--primary-color);
+}
+
+.card-body {
+  padding: 25px;
+}
+
+.status-badge {
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-processing {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.status-shipped {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-completed {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.order-timeline {
+  position: relative;
+  padding-right: 30px;
+}
+
+.timeline-step {
+  position: relative;
+  padding-bottom: 25px;
+  padding-right: 30px;
+}
+
+.timeline-step:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-step::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  border: 3px solid #e9ecef;
+  z-index: 1;
+}
+
+.timeline-step::after {
+  content: "";
+  position: absolute;
+  right: 9px;
+  top: 20px;
+  width: 2px;
+  height: 100%;
+  background-color: #e9ecef;
+}
+
+.timeline-step:last-child::after {
+  display: none;
+}
+
+.timeline-step.active::before {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.timeline-step.current::before {
+  border-color: var(--primary-color);
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(78, 84, 200, 0.2);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.info-item i {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-left: 15px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(78, 84, 200, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-card {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.product-img {
+  height: 180px;
+  object-fit: cover;
+}
+
+.order-summary {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-outline-primary {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-color: rgba(40, 167, 69, 0.2);
+  color: #155724;
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  border-color: rgba(255, 193, 7, 0.2);
+  color: #856404;
+}
+
+@media (max-width: 768px) {
+  .product-card .row > div {
+    padding: 10px !important;
+  }
+
+  .product-img {
+    height: 120px;
+  }
+}

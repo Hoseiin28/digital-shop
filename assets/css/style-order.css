@@ -1,0 +1,98 @@
+body {
+    font-family: 'Yekan', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    direction: rtl;
+    text-align: right;
+}
+
+h1 {
+    color: #0056b3;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+a {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.table {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+    background-color: #0056b3;
+    color: #fff;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 10px;
+}
+
+.table td {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #004494;
+    border-color: #004494;
+}
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background-color: #0056b3;
+    color: #fff;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-title {
+    font-size: 1.2rem;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.btn-close {
+    color: #fff;
+    background-color: transparent;
+    border: none;
+}
+
+.btn-close:hover {
+    color: #000;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
